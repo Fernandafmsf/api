@@ -1,14 +1,22 @@
-FROM node:18-slim
+FROM node:18-alpine3.19 AS build
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 COPY . .
 
 RUN npm install
-RUN npm run 
-##RUN npm prune --production
+RUN npm run build
+RUN npm prune --production
 
+FROM node:18-alpine3.19 
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/package.json ./package.json
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/node_modules ./node_modules
+
+##EXECUTA A APLICAÇÃO
 EXPOSE 3000
 
-CMD ["npm", "run"]
+CMD ["npm", "run", "start:prod"]
