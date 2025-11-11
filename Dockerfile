@@ -1,4 +1,4 @@
-FROM node:18-alpine3.19 AS build
+FROM node:18 AS build
 
 WORKDIR /usr/src/app
 
@@ -10,6 +10,7 @@ RUN npm run build
 RUN npm prune --production
 
 FROM node:18-alpine3.19 
+
 WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/package.json ./package.json
