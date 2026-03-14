@@ -16,10 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup node | ${{ matrix.node }}
+      - name: Setup node 
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 20
           cache: 'npm'
 
       - run: npm install
@@ -31,7 +31,14 @@ jobs:
           SHA=$(echo $GITHUB_SHA | head -c7) 
           echo "sha=$SHA" >> $GITHUB_OUTPUT
 
-      - name: Build Docker Image
-        run: docker build -t rocketseat-ci-api:${{steps.generate_tag.outputs.sha}} . ## vai buildar a imagem com a tag gerada no passo anterior
+      - name: Login into the container registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-   
+      - name: Build Docker Image
+        run: docker build -t fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}} . ## vai buildar a imagem com a tag gerada no passo anterior
+
+      - name: Push Docker Image
+        run: docker push fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}}
