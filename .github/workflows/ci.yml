@@ -11,16 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [14, 16, 18]
+        node: [20, 18, 16]
 
     steps:
-        - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-        - name: Setup node | ${{ matrix.node }}
-          uses: actions/setup-node@v6
-          with:
-            node-version: ${{ matrix.node }}
-            cache: 'npm'
+      - name: Setup node | ${{ matrix.node }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
 
-        - run: npm install
-        - run: npm run test 
+      - run: npm install
+      - run: npm run test 
+
+      - name: Build Docker Image
+        run: docker build -t rocketseat-ci-api:latest . ## vai buildar a imagem com a tag latest
+
