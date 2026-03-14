@@ -9,9 +9,9 @@ jobs:
   build:
     name: 'Build and Push'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [20, 18, 16]
+    # strategy:
+    #   matrix:
+    #     node: [20]
 
     steps:
       - uses: actions/checkout@v4
