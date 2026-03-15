@@ -19,7 +19,7 @@ jobs:
       - name: Setup node 
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 18
           cache: 'npm'
 
       - run: npm install
@@ -37,8 +37,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build Docker Image
-        run: docker build -t fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}} . ## vai buildar a imagem com a tag gerada no passo anterior
+      - name: Build and Push 
+        uses: docker/build-push-action@v5
+        with: 
+          push: true
+          tags: fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}} , fernandafmsf/rocketseat-ci-api:latest 
 
-      - name: Push Docker Image
-        run: docker push fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}}
+      # - name: Build Docker Image
+      #   run: docker build -t fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}} . ## vai buildar a imagem com a tag gerada no passo anterior
+
+      # - name: Push Docker Image
+      #   run: docker push fernandafmsf/rocketseat-ci-api:${{steps.generate_tag.outputs.sha}}
